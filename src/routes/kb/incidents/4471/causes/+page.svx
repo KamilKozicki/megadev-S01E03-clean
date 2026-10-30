@@ -1,0 +1,38 @@
+---
+layout: runbook
+title: '#4471 · separate causes'
+owner: KamilKozicki
+status: proposed
+reviewed: 2026-10-29
+signature: KamilKozicki
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+Ticket #4471 contains two separate problems. The export overlaps between pages, so the table
+removes duplicate report IDs before it groups reports by tenant locale, booking form, and report
+channel.
+
+<CauseTable ticket={4471} />
+
+## Shared parser
+
+The shared parser reads every date month first. The affected tenants write the day first, so
+valid local dates are interpreted with the month and day reversed.
+
+## booking-v3 date hint
+
+`booking-v3` prints `MM/DD/YYYY` for tenants whose locales use day-first dates. Their users enter
+what the hint asks for, but the form reads the value using the tenant locale. This is a separate
+problem because it only occurs through `booking-v3` forms.
+
+<Callout>
+Keep one engineering ticket per cause. Intake tags are guesses; classify these reports from the
+tenant locale, booking form, and channel.
+</Callout>
+
+<RenderStamp {signature} />
